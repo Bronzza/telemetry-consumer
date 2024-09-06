@@ -77,7 +77,7 @@ public class TelemetryMessageControllerTest {
 
     @Test
     public void testGetLocationByDeviceId() throws Exception {
-        when(telemetryMessageService.getLocationBeDeviceId(TEST_ID)).thenReturn(LOCATION);
+        when(telemetryMessageService.getLastLocationBeDeviceId(TEST_ID)).thenReturn(LOCATION);
 
         mockMvc.perform(get(PATH_GET_LOCATION_BY_ID, TEST_ID))
                 .andExpect(status().isOk())

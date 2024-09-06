@@ -12,4 +12,6 @@ public interface TelemetryMessageRepository extends JpaRepository<TelemetryEntit
     List<TelemetryEntity> findAllByDeviceId(String deviceId);
 
     Optional<TelemetryEntity> findByDeviceId(String deviceId);
+
+    Optional<TelemetryEntity> findFirstByDeviceIdOrderByTimestampDesc(String deviceId);
 }

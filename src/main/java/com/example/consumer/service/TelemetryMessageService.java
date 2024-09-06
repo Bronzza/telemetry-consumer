@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,8 +46,8 @@ public class TelemetryMessageService {
                 .collect(Collectors.toList());
     }
 
-    public Location getLocationBeDeviceId(String deviceId) {
-        Location result = repository.findByDeviceId(deviceId).orElse(new TelemetryEntity())
+    public Location getLastLocationBeDeviceId(String deviceId) {
+        Location result = repository.findFirstByDeviceIdOrderByTimestampDesc(deviceId).orElse(new TelemetryEntity())
                 .getLocation();
         return result;
 }

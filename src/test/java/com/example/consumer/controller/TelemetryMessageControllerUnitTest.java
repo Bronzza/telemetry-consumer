@@ -3,7 +3,6 @@ package com.example.consumer.controller;
 import com.example.consumer.dto.TelemetryDto;
 import com.example.consumer.entity.Location;
 import com.example.consumer.service.TelemetryMessageService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
@@ -23,9 +22,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 class TelemetryMessageControllerUnitTest {
@@ -70,12 +67,12 @@ class TelemetryMessageControllerUnitTest {
     @Test
     public void testGetLocationByDeviceId() throws Exception {
         TelemetryDto testTelemetry = creteTestData().getFirst();
-        given(telemetryMessageService.getLocationBeDeviceId(anyString()))
+        given(telemetryMessageService.getLastLocationBeDeviceId(anyString()))
                 .willReturn(testTelemetry.getLocation());
         ResponseEntity<Location> result = controllerUnderTest.getLocationByDeviceId(TEST_ID);
         assertNotNull(result);
         assertEquals(200, result.getStatusCode().value());
-        then(telemetryMessageService).should(times(1)).getLocationBeDeviceId(TEST_ID);
+        then(telemetryMessageService).should(times(1)).getLastLocationBeDeviceId(TEST_ID);
     }
 
     private static List<TelemetryDto> creteTestData() {
