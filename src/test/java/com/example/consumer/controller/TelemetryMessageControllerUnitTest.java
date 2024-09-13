@@ -66,7 +66,7 @@ class TelemetryMessageControllerUnitTest {
 
     @Test
     public void testGetLocationByDeviceId() throws Exception {
-        TelemetryDto testTelemetry = creteTestData().getFirst();
+        TelemetryDto testTelemetry = creteTestData().get(0);
         given(telemetryMessageService.getLastLocationBeDeviceId(anyString()))
                 .willReturn(testTelemetry.getLocation());
         ResponseEntity<Location> result = controllerUnderTest.getLocationByDeviceId(TEST_ID);

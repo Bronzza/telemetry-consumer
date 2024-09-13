@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    networks:
+      - kafka-net
+  kafka:
+    image: wurstmeister/kafka
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: "device_data:1:1"
+    networks:
+      - kafka-net
+
+
+  # PostgreSQL
+  db:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_USER: telemetry
+      POSTGRES_PASSWORD: telemetry
+      POSTGRES_DB: telemetry
+    ports:
+      - "5432:5432"
+    networks:
+      - kafka-net
+
+  # Producer
+  producer:
+    image: bronzzza/telemetry-producer-multistage:latest
+    ports:
+      - "8080:8080"
+    container_name: telemetry-producer
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      - kafka
+    networks:
+      - kafka-net
+  # Consumer
+  consumer:
+    image: bronzzza/telemetry-consumer-pom:latest
+    ports:
+      - "8081:8081"
+    container_name: telemetry-consumer
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/telemetry
+      SPRING_DATASOURCE_USERNAME: telemetry
+      SPRING_DATASOURCE_PASSWORD: telemetry
+    depends_on:
+      - kafka
+      - db
+    networks:
+      - kafka-net
+
+  # UI
+  drone-tracker:
+    image: bronzzza/drone-tracker:latest
+    container_name: drone-tracker
+    ports:
+      - "3000:80"
+    depends_on:
+      - consumer
+networks:
+  kafka-net:
+    driver: bridge
