@@ -6,6 +6,7 @@ server:
 spring:
   kafka:
     bootstrap-servers: localhost:9092
+    topic: device_data
     consumer:
       group-id: telemetry-consumer-group
       auto-offset-reset: earliest

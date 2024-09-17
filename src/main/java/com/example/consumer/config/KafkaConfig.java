@@ -1,5 +1,6 @@
 package com.example.consumer.config;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import model.TelemetryMessage;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -14,9 +15,14 @@ import java.util.Properties;
 
 @Slf4j
 @Configuration
+@Getter
 public class KafkaConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
+
+    @Value("${spring.kafka.topic:device_data}")
+    private String telemetryTopic;
+
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, TelemetryMessage> kafkaListenerContainerFactory(
             ConsumerFactory<String, TelemetryMessage> consumerFactory) {
