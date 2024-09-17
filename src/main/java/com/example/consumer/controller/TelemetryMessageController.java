@@ -1,5 +1,6 @@
 package com.example.consumer.controller;
 
+import com.example.consumer.dto.DeviceNameId;
 import com.example.consumer.dto.TelemetryDto;
 import com.example.consumer.entity.Location;
 import com.example.consumer.service.TelemetryMessageService;
@@ -8,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -43,4 +45,13 @@ public class TelemetryMessageController {
         List<TelemetryDto> records = telemetryMessageService.getAllRecords();
         return ResponseEntity.ok(records);
     }
+
+    @GetMapping("/device_info")
+    public ResponseEntity<List<DeviceNameId>> getAllDeviceNames() {
+        //TODO: implement endopoint and represent it on ui. For now ui droneId is hardcoded.
+        List<DeviceNameId> objects = Collections.emptyList();
+        return ResponseEntity.ok(objects);
+    }
+
+
 }

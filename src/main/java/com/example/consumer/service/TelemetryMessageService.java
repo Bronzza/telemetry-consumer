@@ -50,5 +50,12 @@ public class TelemetryMessageService {
         Location result = repository.findFirstByDeviceIdOrderByTimestampDesc(deviceId).orElse(new TelemetryEntity())
                 .getLocation();
         return result;
-}
+    }
+
+    public List<TelemetryDto> getAllDeviceNames() {
+        return repository.findAll()
+                .stream()
+                .map(webMapper::toDto)
+                .collect(Collectors.toList());
+    }
 }

@@ -16,7 +16,6 @@ public class TelemetryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private LocalDateTime timestamp;
     private String deviceId;
     private String deviceName;

@@ -1,0 +1,35 @@
+Building image with pom specified mvn plugin
+mvn clean package dockerfile:build
+mvn clean package dockerfile:build dockerfile:push
+docker tag bronzzza/telemetry-consumer-pom:0.0.1-SNAPSHOT bronzzza/telemetry-consumer-pom:latest
+docker push bronzzza/telemetry-consumer-pom:latest
+
+
+==================
+Build through command line
+docker build --no-cache -f Dockerfile -t bronzzza/telemetry-consumer:latest .
+docker push bronzzza/telemetry-consumer:latest
+
+
+==================
+Passing command line arguments in docker compose yml:
+adding "command:>" section in docker-compose yml
+like so:
+producer:
+    image: bronzzza/telemetry-producer-multistage:latest
+    depends_on:
+      - kafka0
+    environment:
+      KAFKA_BROKER_URL: kafka0:29092
+      KAFKA_TOPIC: device_data
+    command: >
+      --app.deviceId=drone123
+      --app.deviceName=droneX
+      --app.startLatitude=50.4501
+      --app.startLongitude=30.5234
+      --app.endLatitude=55.7558
+      --app.endLongitude=37.6173
+      --app.speed=0.14
+      --app.interval=15
+
+====================
