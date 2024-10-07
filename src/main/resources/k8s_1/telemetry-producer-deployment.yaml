@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: telemetry-producer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: telemetry-producer
+  template:
+    metadata:
+      labels:
+        app: telemetry-producer
+    spec:
+      containers:
+        - name: telemetry-producer
+          image: bronzzza/telemetry-producer-multistage:latest
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "docker"
+            - name: KAFKA_TOPIC
+              value: "device_data"
+            - name: KAFKA_BROKER_URL
+              value: "kafka-cluster:9092"  # Assuming Kafka service will be named 'kafka'
+          ports:
+            - containerPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: telemetry-producer
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: telemetry-producer

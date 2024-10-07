@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: telemetry-consumer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: telemetry-consumer
+  template:
+    metadata:
+      labels:
+        app: telemetry-consumer
+    spec:
+      containers:
+        - name: telemetry-consumer
+          image: bronzzza/telemetry-consumer-pom:latest
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "docker"
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://postgresql:5432/telemetry"  # PostgreSQL service name and database
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "telemetry"  # Database username
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "telemetry"  # Database password
+            - name: KAFKA_TOPIC
+              value: "device_data"
+            - name: KAFKA_BROKER_URL
+              value: "kafka-cluster:9092"
+          ports:
+            - containerPort: 8081
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: telemetry-consumer
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8081
+      targetPort: 8081
+  selector:
+    app: telemetry-consumer

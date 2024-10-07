@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: drone-tracker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: drone-tracker
+  template:
+    metadata:
+      labels:
+        app: drone-tracker
+    spec:
+      containers:
+        - name: drone-tracker
+          image: bronzzza/drone-tracker:latest
+          env:
+            - name: REACT_APP_API_BASE_URL
+              value: "http://telemetry-consumer:8081/api/telemetry/device/location"  # URL to the consumer app API
+          ports:
+            - containerPort: 3000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: drone-tracker
+spec:
+  type: NodePort  # Change to NodePort to allow access from outside the cluster
+  ports:
+    - port: 3000
+      targetPort: 3000
+      nodePort: 30001  # Optional: specify a node port if needed
+  selector:
+    app: drone-tracker
